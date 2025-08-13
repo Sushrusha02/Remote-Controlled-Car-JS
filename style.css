@@ -1,0 +1,20 @@
+body {
+    background-color: Black;
+    color:beige;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin: 20px;
+  }
+  
+  canvas {
+    max-width: 700px;
+    margin: auto;
+    background-color: beige;
+  }
+  
+  button {
+    margin: 10px;
+    padding: 8px 16px;
+    font-size: 16px;
+    cursor: pointer;
+  }
