@@ -1,14 +1,13 @@
-# 🚕 Remote-Controlled-Car-JS
+A JavaScript project that visualizes a car's motion (Distance vs Time) using Chart.js
 
-A JavaScript + Chart.js project that recreates the Position of a Remote-Controlled Car distance time graph animation.
-
-It features:
-- A blue line showing the car's distance from Emile over time.
-- A 🚕 emoji moving smoothly along the path.
-- A tracing effect where the path is drawn gradually as the car moves.
+It allows users to:
+- Change speed of a car
+- Change the car emoji
+- View live calculation
 
 
 ✨ Features
+- Distance vs Time chart using chart.js
 - Smooth  car movement  along a plotted path.
 - Real-time  path tracing  as the car moves.
 - Fully  customizable  path, speed, and car icon.
@@ -21,3 +20,6 @@ It features:
 ── script.js  => Animation logic 
 ── README.md  => Documentation 
 
+Usage
+- Select different car Emojis from the dropdown to update the chart
+- Watch the car move along the graph as time progresses.
