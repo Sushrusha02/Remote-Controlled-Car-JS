@@ -1,21 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Position of a Remote Controlled Car</title>
-  <link rel="stylesheet" href="style.css">
-  
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body>
-  <h2>Position of a Remote Controlled Car</h2>
-  <p>🚕 Track the distance of a Remote Controlled toy car over time on a graph</p>
+    <head>
+        <meta charset="UTF-8">
+        <title>Position of a Remote Controlled Car</title>
+        <link rel="stylesheet" href="style.css">
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    </head>
+    <body>
+        <h2>🚕Position of a Remote Controlled Car</h2>
+        <p>Track the distance of a Remote Controlled toy car over time on a graph.Control the Speed, car emohi, path style & view live calculations</p>
 
-  <canvas id="carChart"></canvas>
-  <br>
-  <button onclick="startAnimation()">▶ Play</button>
-  <button onclick="resetChart()">🔄 Reset</button>
+        <canvas id="carChart"></canvas>
 
-  <script src="script.js"></script>
-</body>
-</html
+        <div class="controls">
+            <button onclick="startAnimation()">▶ Play</button>
+            <button onclick="pauseAnimation()">⏸ Pause</button>
+            <button onclick="resetChart()">🔄 Reset</button>
+            <br>
+            <label>
+                Speed:
+                <input type="range" id="speedControl" min="0.01" max="0.1" step="0.01" value="0.02" onchange="updateSpeed(this.value)">
+                <span id="speedValue">0.02</span>
+            </label>
+            <br>
+            <label>
+                Car Emoji:
+                <select id="emojiPicker" onchange="changeCarEmoji(this.value)">
+                    <option value="🚕">🚕</option>
+                    <option value="🚗">🚗</option>
+                    <option value="🚓">🚓</option>
+                    <option value="🚙">🚙</option>
+                </select>
+            </label>
+            <label>
+                Path Style:
+                <select id="pathStyle" onchange="changePathStyle(this.value)">
+                    <option value="solid">Solid</option>
+                    <option value="dashed">Dashed</option>
+                </select>
+            </label>
+        </div>
+
+        <div class="stats">
+            <h3>📊 Live Calculations</h3>
+            <p>⏲ Time Elapsed:
+                <span id="timeElapsed">0</span>
+                 Units
+            </p>
+            <p>📏 Distance Covered:
+                <span id="distanceCovered">0</span>
+                 Units
+            </p>
+            <p>⚡ Instantaneous Speed: <span id="instSpeed">0</span> Units
+
+            </p>
+
+        </div>
+        <script src="script.js"></script>
+    </body>
+</html>
