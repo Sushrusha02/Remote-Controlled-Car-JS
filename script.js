@@ -1,6 +1,5 @@
 const ctx = document.getElementById('carChart').getContext('2d');
 
-// Path coordinates
 const path = [
   { x: 0, y: 0 },
   { x: 1, y: 2 },
@@ -14,17 +13,19 @@ const path = [
 ];
 
 let timer;
+let speed = 0.02;
+let carEmoji = "🚕";
+let elapsedTime = 0;
 
-const carCanvas = document.createElement("canvas");
-carCanvas.width = 30;
-carCanvas.height = 30;
-const carCtx = carCanvas.getContext("2d");
-carCtx.font = "24px Arial";
-carCtx.textAlign = "center";
-carCtx.textBaseline = "middle";
-carCtx.fillText("🚕", 15, 15);
-const carImg = new Image();
-carImg.src = carCanvas.toDataURL();
+
+function changeCarEmoji(newEmoji){
+    carEmoji = newEmoji;
+    carImage = createCarImage(carEmoji); //redraw emoji into new img
+    chart.data.datasets[1].pointStyle = carImage;
+    chart.update();
+}
+
+let carImage = createCarImage(carEmoji);
 
 
 let chart = new Chart(ctx, {
@@ -33,9 +34,10 @@ let chart = new Chart(ctx, {
     datasets: [
       {
         label: 'Distance from Emile',
-        data: [], 
-        borderColor: 'blue',
+        data: [],
+        borderColor: 'beige',
         borderWidth: 2,
+        borderDash: [],
         tension: 0,
         fill: false,
         pointRadius: 0
@@ -44,7 +46,7 @@ let chart = new Chart(ctx, {
         label: 'Car Position',
         data: [path[0]],
         borderColor: 'transparent',
-        pointStyle: carImg,
+        pointStyle: carImage,
         pointRadius: 15,
         showLine: false
       }
@@ -69,30 +71,37 @@ let chart = new Chart(ctx, {
   }
 });
 
+let segment = 0;
+let t = 0;
+
 function interpolatePoint(p1, p2, t) {
-  return {
-    x: p1.x + (p2.x - p1.x) * t,
-    y: p1.y + (p2.y - p1.y) * t
-  };
+  return { x: p1.x + (p2.x - p1.x) * t, y: p1.y + (p2.y - p1.y) * t };
+}
+
+function updateStats(point, prevPoint) {
+  document.getElementById("timeElapsed").textContent = elapsedTime.toFixed(2);
+  document.getElementById("distanceCovered").textContent = point.y.toFixed(2);
+
+  let instSpeed = 0;
+  if (prevPoint) {
+    const dx = point.x - prevPoint.x;
+    const dy = point.y - prevPoint.y;
+    instSpeed = dx !== 0 ? (dy / dx).toFixed(2) : 0;
+  }
+  document.getElementById("instSpeed").textContent = instSpeed;
 }
 
 function startAnimation() {
-  resetChart();
-  let segment = 0;
-  let t = 0;
-  const speed = 0.02; 
-
+  if (timer) return;
   timer = setInterval(() => {
     if (segment < path.length - 1) {
       let currentPoint = interpolatePoint(path[segment], path[segment + 1], t);
 
-      // Update car position
       chart.data.datasets[1].data[0] = currentPoint;
 
-      //Update Path
       let drawnPath = chart.data.datasets[0].data;
       if (drawnPath.length === 0) {
-        drawnPath.push(path[0]); // This is the first point
+        drawnPath.push(path[0]);
       }
       if (t === 0) {
         drawnPath.push(path[segment]);
@@ -101,6 +110,9 @@ function startAnimation() {
 
       chart.update();
 
+      elapsedTime += speed;
+      updateStats(currentPoint, path[segment]);
+
       t += speed;
       if (t >= 1) {
         t = 0;
@@ -108,13 +120,56 @@ function startAnimation() {
       }
     } else {
       clearInterval(timer);
+      timer = null;
     }
-  }, 50);
+  }, 100);
+}
+
+function pauseAnimation() {
+  clearInterval(timer);
+  timer = null;
 }
 
 function resetChart() {
   clearInterval(timer);
+  timer = null;
+  segment = 0;
+  t = 0;
+  elapsedTime = 0;
   chart.data.datasets[0].data = [];
   chart.data.datasets[1].data[0] = path[0];
   chart.update();
+  updateStats({ x: 0, y: 0 });
+}
+
+function updateSpeed(val) {
+  speed = parseFloat(val);
+  document.getElementById("speedValue").textContent = val;
+}
+
+function changeCarEmoji(newEmoji) {
+  carEmoji = newEmoji;
+  carImage = createCarImage(carEmoji);
+  chart.data.datasets[1].pointStyle = carImage;
+  chart.update();
+}
+
+function changePathStyle(style) {
+  chart.data.datasets[0].borderDash = style === "dashed" ? [5, 5] : [];
+  chart.update();
+}
+
+function createCarImage(emoji){
+    const carCanvas = document.createElement("canvas");
+    carCanvas.width =30;
+    carCanvas.height = 30;
+    const carCtx = carCanvas.getContext("2d");
+    carCtx.clearRect(0, 0, carCanvas.width, carCanvas.height);
+    carCtx.font="24px Arial";
+    carCtx.textAlign = "center";
+    carCtx.textBaseline ="middle";
+    carCtx.fillText(emoji, 15, 15);
+    const img = new Image();
+    img.src = carCanvas.toDataURL();
+    return img;
 }
